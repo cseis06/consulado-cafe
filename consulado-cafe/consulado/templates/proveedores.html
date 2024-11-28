@@ -1,0 +1,125 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe Consulado</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="header">
+        <a href="/swicht_main" onclick="resetFormulario()" class="logo"><img src="{{ url_for('static', filename='assets/logo.png') }}" alt=""></a>
+
+        <i class='bx bx-dots-horizontal-rounded' id="menu-icon"></i>
+
+        <nav class="navbar">
+            <a href="/swicht_productos" onclick="resetFormulario()">PRODUCTOS</a>
+            <a href="/swicht_clientes" onclick="resetFormulario()">CLIENTES</a>
+            <a href="/swicht_empleados" onclick="resetFormulario()">EMPLEADOS</a>
+            <a href="/swicht_proveedores" onclick="resetFormulario()">PROVEEDORES</a>
+            <a href="{{ url_for('menu') }}" id="downloadLink">MENÚ</a>
+        </nav>
+    </header>
+    <!-- FIN NAVBAR -->
+
+<section class="container">
+    <h1>NUESTROS PROVEEDORES</h1>
+
+    <script>
+        // Verifica si el enlace fue clickeado y activa la descarga
+        document.getElementById('downloadLink').addEventListener('click', function() {
+            alert("El archivo PDF está siendo descargado.");
+        });
+    </script>
+
+    <script>
+        function resetFormulario() {
+            fetch('/reset_bandera', { method: 'POST' })
+                .then(response => console.log("Bandera cambiada en el servidor"))
+                .catch(error => console.error("Error al cambiar bandera:", error));
+        }
+    </script>
+
+    <div class="form">
+        <div class="text">
+            <h2>Agregar Proveedor</h2>
+        </div>
+    
+        <form action="/agg_proveedores" method="POST" enctype="multipart/form-data">
+            {% if bandera %}
+            <!-- Editar proveedor -->
+            <input type="text" name="nombre" placeholder="Nombre" value="{{ proveedor_m[1] }}" required>
+            <input type="text" name="telefono" placeholder="Teléfono" value="{{ proveedor_m[2] }}" required>
+            <input type="email" name="gmail" placeholder="Correo electrónico" value="{{ proveedor_m[3] }}" required>
+            {% else %}
+            <!-- Agregar nuevo proveedor -->
+            <input type="text" name="nombre" placeholder="Nombre" required>
+            <input type="text" name="telefono" placeholder="Teléfono" required>
+            <input type="email" name="gmail" placeholder="Correo electrónico" required>
+            {% endif %}
+    
+            <button type="submit">Guardar</button>
+            <button type="button" onclick="window.location.href='/swicht_proveedores'; resetFormulario()">Limpiar</button>
+        </form>
+    
+        <script>
+            function confirmarEliminacion() {
+                return confirm("¿Estás seguro de que deseas eliminar este proveedor?");
+            }
+        </script>
+    </div>
+
+    <div class="form">
+        <div class="text">
+            <h2>Ver Proveedores</h2>
+        </div>
+
+        <form action="{{ url_for('buscar_proveedores') }}" method="GET">
+            <input type="text" name="query" placeholder="Buscar proveedores..." required>
+            <button type="submit">Buscar</button>
+        </form>
+ 
+        {% if query %}
+            <h3>Resultados para "{{ query }}"</h3>
+        {% endif %}
+    </div>
+
+    <div class="table">
+        <table>
+            <thead>
+                <tr>
+                    <td>Nombre</td>
+                    <td>Teléfono</td>
+                    <td>Gmail</td>
+                    <td>Operaciones</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for proveedor in proveedores %}
+                    <tr>
+                        <td>{{ proveedor.1 }}</td>
+                        <td>{{ proveedor.2 }}</td>
+                        <td>{{ proveedor.3  }}</td>
+                        <td>
+                            <a href="/editar_proveedores/{{ proveedor.0 }}" onclick="window.location.href='/swicht_proveedores'">Editar</a>
+                            <a href="/eliminar_proveedores/{{ proveedor.0 }}" onclick="resetFormulario(); return confirmarEliminacion()">Eliminar</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</section>

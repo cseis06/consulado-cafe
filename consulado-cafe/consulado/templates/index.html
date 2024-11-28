@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe Consulado</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="header">
+        <a href="/swicht_main" onclick="resetFormulario()" class="logo"><img src="{{ url_for('static', filename='assets/logo.png') }}" alt=""></a>
+
+        <i class='bx bx-dots-horizontal-rounded' id="menu-icon"></i>
+
+        <nav class="navbar">
+            <a href="/swicht_productos" onclick="resetFormulario()">PRODUCTOS</a>
+            <a href="/swicht_clientes" onclick="resetFormulario()">CLIENTES</a>
+            <a href="/swicht_empleados" onclick="resetFormulario()">EMPLEADOS</a>
+            <a href="/swicht_proveedores" onclick="resetFormulario()">PROVEEDORES</a>
+            <a href="{{ url_for('menu') }}" id="downloadLink">MENÚ</a>
+        </nav>
+    </header>
+    <!-- FIN NAVBAR -->
+
+    <!-- HOME -->
+    <section class="home" id="home">
+        <div class="home-text">
+            <span>Bienvenidos a</span>
+            <h1>Café Consulado</h1>
+            <h2>¡Café, Brunch y Ferias!</h2>
+        </div>
+        <div class="home-img">
+            <img src="{{ url_for('static', filename='assets/home.png') }}" alt="">
+        </div>
+    </section>
+    <!-- FIN HOME -->
+
+    <!-- PRODUCTOS -->
+        <section class="prod" id="prod">
+            <div class="prod-text">
+                <h1>LOS PREFERIDOS</h1> 
+                <p>De la Casa</p>
+            </div>
+
+            <div class="prod-container">
+                <div class="box">
+                    <div class="box-img">
+                        <img src="{{ url_for('static', filename='assets/italo_sw.png') }}" alt="">
+                    </div>
+                    <div class="stars">
+                        <i class='bx bxs-star bx-tada'></i>
+                        <i class='bx bxs-star bx-tada'></i>
+                        <i class='bx bxs-star bx-tada'></i>
+                        <i class='bx bxs-star-half bx-tada'></i>
+                        <i class='bx bx-star bx-tada'></i>
+                    </div>
+                    <h2>Sandwich Italo</h2>
+                    <span>Gs. 38.000</span>
+                </div>
+                <div class="box">
+                    <div class="box-img">
+                        <img src="{{ url_for('static', filename='assets/mbeju_cocido.png') }}" alt="">
+                    </div>
+                    <div class="stars">
+                        <i class='bx bxs-star bx-tada'></i>
+                        <i class='bx bxs-star bx-tada'></i>
+                        <i class='bx bxs-star bx-tada'></i>
+                        <i class='bx bxs-star bx-tada'></i>
+                        <i class='bx bxs-star bx-tada'></i>
+                        
+                    </div>
+                    <h2>Mbeju con Cocido</h2>
+                    <span>Gs. 30.000</span>
+                </div>
+                <div class="box">
+                    <div class="box-img">
+                        <img src="{{ url_for('static', filename='assets/latte.png') }}" alt="">
+                    </div>
+                    <div class="stars">
+                        <i class='bx bxs-star bx-tada'></i>
+                        <i class='bx bxs-star bx-tada'></i>
+                        <i class='bx bxs-star bx-tada'></i>
+                        <i class='bx bxs-star bx-tada'></i>
+                        <i class='bx bxs-star-half bx-tada'></i>
+                    </div>
+                    <h2>Latte Tradicional</h2>
+                    <span>Gs. 18.000</span>
+                </div>
+            </div>
+        </section>
+    <!-- FIN PRODUCTOS -->
+
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="social-icons col">
+            <a href="https://www.facebook.com/cafeconsulado/">
+                <i class='bx bxl-facebook-circle'></i>
+            </a>
+
+            <a href="https://maps.app.goo.gl/LS9Y2qp1YTZppR1U8">
+                <i class='bx bxs-map'></i>
+            </a>
+
+            <a href="https://www.instagram.com/consuladocafe/?hl=es">
+                <i class="bx bxl-instagram-alt"></i>
+            </a>
+        </div>
+
+        <ul class="list">
+            <li>
+                <a href="/swicht_productos">PRODUCTOS</a>
+            </li>
+            <li>
+                <a href="/swicht_clientes">CLIENTES</a>
+            </li>
+            <li>
+                <a href="/swicht_empleados">EMPLEADOS</a>
+            </li>
+            <li>
+                <a href="/swicht_proveedores">PROVEEDORES</a>
+            </li>
+            <li>
+                <a href="{{ url_for('menu') }}" id="downloadLink">MENÚ</a>
+            </li>
+        </ul>
+        
+        <p class="copyright">&copy; Café Consulado | Paraguay</p>
+    </footer>
+    <!-- FIN FOOTER -->
+
+    <!-- SCRIPTS -->
+    <script src="{{ url_for('static', filename='script.js') }}"></script>   
+</body>
+</html>

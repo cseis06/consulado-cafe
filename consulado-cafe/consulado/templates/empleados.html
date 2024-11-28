@@ -1,0 +1,131 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe Consulado</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="header">
+        <a href="/swicht_main" onclick="resetFormulario()" class="logo"><img src="{{ url_for('static', filename='assets/logo.png') }}" alt=""></a>
+
+        <i class='bx bx-dots-horizontal-rounded' id="menu-icon"></i>
+
+        <nav class="navbar">
+            <a href="/swicht_productos" onclick="resetFormulario()">PRODUCTOS</a>
+            <a href="/swicht_clientes" onclick="resetFormulario()">CLIENTES</a>
+            <a href="/swicht_empleados" onclick="resetFormulario()">EMPLEADOS</a>
+            <a href="/swicht_proveedores" onclick="resetFormulario()">PROVEEDORES</a>
+            <a href="{{ url_for('menu') }}" id="downloadLink">MENÚ</a>
+        </nav>
+    </header>
+    <!-- FIN NAVBAR -->
+
+    <script>
+        // Verifica si el enlace fue clickeado y activa la descarga
+        document.getElementById('downloadLink').addEventListener('click', function() {
+            alert("El archivo PDF está siendo descargado.");
+        });
+    </script>
+
+    <script>
+        function resetFormulario() {
+            fetch('/reset_bandera', { method: 'POST' })
+                .then(response => console.log("Bandera cambiada en el servidor"))
+                .catch(error => console.error("Error al cambiar bandera:", error));
+        }
+    </script>
+
+    <section class="container">
+        <h1>NUESTROS EMPLEADOS</h1>
+
+        <div class="form">
+            <div class="text">
+                <h2>Agregar un Nuevo Empleado</h2>
+            </div>
+
+            <form action="/agg_empleados" method="POST" enctype="multipart/form-data">
+                {% if bandera %}
+                <!-- Editar empleado -->
+                <input type="text" name="nombre" placeholder="Nombre" value="{{ empleado_m[1] }}" required>
+                <input type="text" name="apellido" placeholder="Apellido" value="{{ empleado_m[2] }}" required>
+                <input type="text" name="numero" placeholder="Número" value="{{ empleado_m[3] }}" required>
+                <input type="email" name="gmail" placeholder="Correo electrónico" value="{{ empleado_m[4] }}" required>
+                {% else %}
+                <!-- Agregar nuevo empleado -->
+                <input type="text" name="nombre" placeholder="Nombre" required>
+                <input type="text" name="apellido" placeholder="Apellido" required>
+                <input type="text" name="numero" placeholder="Número" required>
+                <input type="email" name="gmail" placeholder="Correo electrónico" required>
+                {% endif %}
+            
+                <button type="submit">Guardar</button>
+                <button type="button" onclick="window.location.href='/swicht_empleados'; resetFormulario()">Limpiar</button>
+            </form>
+            
+            <script>
+                function confirmarEliminacion() {
+                    return confirm("¿Estás seguro de que deseas eliminar este empleado?");
+                }
+            </script>
+        </div>
+
+        <div class="form">
+            <div class="text">
+                <h2>Ver Empleados</h2>
+            </div>
+
+            <form action="{{ url_for('buscar_empleados') }}" method="GET">
+                <input type="text" name="query" placeholder="Buscar empleados..." required>
+                <button type="submit">Buscar</button>
+            </form>
+
+            {% if query %}
+                <h3>Resultados para "{{ query }}"</h3>
+            {% endif %}
+        </div>
+        
+        
+        
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <td>Nombre</td>
+                        <td>Apellido</td>
+                        <td>Número</td>
+                        <td>Gmail</td>
+                        <td>Operaciones</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for empleado in empleados %}
+                        <tr>
+                            <td>{{ empleado[1] }}</td>  <!-- Nombre -->
+                            <td>{{ empleado[2] }}</td>  <!-- Apellido -->
+                            <td>{{ empleado[3] }}</td>  <!-- Número -->
+                            <td>{{ empleado[4] }}</td>  <!-- Gmail -->
+                            <td>
+                                <a href="/editar_empleados/{{ empleado[0] }}" onclick="window.location.href='/swicht_empleados'">Editar</a>
+                                <a href="/eliminar_empleados/{{ empleado[0] }}" onclick="resetFormulario(); return confirmarEliminacion()">Eliminar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+</body>

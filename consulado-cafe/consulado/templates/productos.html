@@ -1,0 +1,139 @@
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+{% for message in messages %}
+    <p>{{ message }}</p>
+{% endfor %}
+{% endif %}
+{% endwith %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE-edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe Consulado</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <header class="header">
+        <a href="/swicht_main" onclick="resetFormulario()" class="logo"><img src="{{ url_for('static', filename='assets/logo.png') }}" alt=""></a>
+
+        <i class='bx bx-dots-horizontal-rounded' id="menu-icon"></i>
+
+        <nav class="navbar">
+            <a href="/swicht_productos" onclick="resetFormulario()">PRODUCTOS</a>
+            <a href="/swicht_clientes" onclick="resetFormulario()">CLIENTES</a>
+            <a href="/swicht_empleados" onclick="resetFormulario()">EMPLEADOS</a>
+            <a href="/swicht_proveedores" onclick="resetFormulario()">PROVEEDORES</a>
+            <a href="{{ url_for('menu') }}" id="downloadLink">MENÚ</a>
+        </nav>
+    </header>
+    <!-- FIN NAVBAR -->
+
+    <section class="container">
+        <h1>NUESTROS PODUCTOS</h1>
+
+        <script>
+            // Verifica si el enlace fue clickeado y activa la descarga
+            document.getElementById('downloadLink').addEventListener('click', function() {
+                alert("El archivo PDF está siendo descargado.");
+            });
+        </script>
+
+        <script>
+            function resetFormulario() {
+                fetch('/reset_bandera', { method: 'POST' })
+                    .then(response => console.log("Bandera cambiada en el servidor"))
+                    .catch(error => console.error("Error al cambiar bandera:", error));
+            }
+        </script>
+
+        <div class="form">
+            <div class="text">
+                <h2>Agregar Productos</h2>
+            </div>
+
+            <form action="/agg_productos" method="POST" enctype="multipart/form-data">
+                {% if bandera %}
+                <input type="text" name="nombre" placeholder="Nombre" value="{{ producto_m.1 }}" required>
+                <input type="number" name="precio" placeholder="Precio" step="0.01" value="{{ producto_m.2 }}" required>    
+                <input type="number" name="cantidad" placeholder="Cantidad" step="0.01" value="{{ producto_m.3 }}" required>
+                <input type="text" name="proveedor" placeholder="Proveedor" value="{{ producto_m.6 }}" required>
+    
+                <img src="data:image/jpeg;base64,{{ producto_m[4] }}" alt="Imagen del producto" width="100">
+                <input type="file" name="imagen" accept="image/*" required>
+    
+                {% else %}
+                <input type="text" name="nombre" placeholder="Nombre" required>
+                <input type="number" name="precio" placeholder="Precio" step="0.01" required>    
+                <input type="number" name="cantidad" placeholder="Cantidad" step="0.01" required>
+                <input type="text" name="proveedor" placeholder="Proveedor" required>
+                <input type="file" name="imagen" accept="image/*" required>
+                {% endif %}
+    
+                <button type="submit">Guardar</button>
+                <button type="button" onclick="window.location.href='/swicht_productos'; resetFormulario()">Limpiar</button>
+    
+            </form>
+        </div>
+
+        <div class="form">
+            <div class="text">
+                <h2>Ver Productos</h2>
+            </div>
+
+            <script>
+                function confirmarEliminacion() {
+                    return confirm("¿Estás seguro de que deseas eliminar este producto?");
+                }
+            </script>
+
+            <form action="{{ url_for('buscar_productos') }}" method="GET">
+                <input type="text" name="query" placeholder="Buscar productos..." required>
+                <button type="submit">Buscar</button>
+            </form>
+
+            {% if query %}
+                <h3>Resultados para "{{ query }}"</h3>
+            {% endif %}
+    
+        </div>
+
+        <div class="table">
+            <table>
+                <thead>
+                    <tr>
+                        <td>Nombre</td>
+                        <td>Precio</td>
+                        <td>Cantidad</td>
+                        <td>Imagen</td>
+                        <td>Proveedor</td>
+                        <td>Operaciones</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                        <tr>
+                            <td>{{ producto.1 }}</td>
+                            <td>{{ producto.2 }}</td>
+                            <td>{{ producto.3 }}</td>
+                            <td>
+                                <img src="data:image/png;base64,{{ producto.4 }}" alt="Imagen del producto" width="100">
+                            </td>
+                            <td>{{ producto.6 }}</td>
+                            <td>
+                                <a href="/editar_productos/{{ producto.0 }}" onclick="window.location.href='/swicht_productos'">Editar</a>
+                                <a href="/eliminar_productos/{{ producto.0 }}" onclick="resetFormulario(); return confirmarEliminacion()">Eliminar</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+    </section>
+</body>
